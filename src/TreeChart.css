@@ -1,0 +1,8 @@
+div.scroll {
+    margin: 4px, 4px;
+    padding: 4px;
+    background-color: #ff0062;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
