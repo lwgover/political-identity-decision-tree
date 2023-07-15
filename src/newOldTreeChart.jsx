@@ -11,27 +11,24 @@ import './TreeChart.css'
 var width = 15000;
 var height = 600;
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-const scale_margin = 20;
+const tree_margin = { top: 20, right: 10, bottom: 20, left: 30 };
+const data_min = 0
+const data_max = 10;
+const data_max_diff = 10;
 
-var counter = 0
-
-const TreeChart = ({tree,data }) => {
-  console.log(data);
+const TreeChart = ({ data }) => {
   const svg = useRef(null);
   useEffect(() => {
-    renderChart(tree,data)
-  }, [tree]);
-  const renderChart = (tree,data) => {
-    var clusterLayout = function (node) {
+    renderBar(data)
+  }, [data]);
+  const renderBar = (data) => {
+    var root = d3.hierarchy(data);
+    root.isLeaf = false;
+    var clusterLayout = function(node){
       node.sort();
       d3.cluster().nodeSize([15, 140])(node); // .size is the wrong function, rewrite later to specify node size or something
     }
-    // Give the data to this cluster layout:
-    var root = d3.hierarchy(tree, function (d) {
-      return d.children;
-    });
     clusterLayout(root);
-    root.isLeaf = false;
 
     const g = select(svg.current).append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
@@ -44,69 +41,54 @@ const TreeChart = ({tree,data }) => {
     var graphArea = g.append("clipPath")
       .attr("id", "graph-area")
       .append("rect")
-      .attr("rx", "20")
-      .attr("width", 186);
+      .attr("fill", "rgba(0,0,0,0.1)")
+      .attr("rx","20")
+      .attr("width",180);
 
     g.append("rect").attr("fill", "rgba(0,0,0,0.1)").attr("width", 20000).attr("height", 20000).attr("clip-path", "url(#graph-area)");
 
-    var xScale = d3.scaleLinear().domain([data.min,data.max])
-        .range([0, 200]);
 
-      var xAxis = d3.axisBottom();
-      xAxis.scale(xScale)
-      .ticks(data.meanings.length);
-
-    graphArea.append("g")
-        .attr("class", "axis") //Assign "axis" class .call(xAxis);
-        .attr("transform", "translate(10,10)")
-        .call(xAxis);
-
-
-    root.descendants().reverse().forEach((d, i) => {
+    root.descendants().forEach((d, i) => {
       d.id = i;
       d._children = d.children;
-      d.y0 = d.y
-      d.x0 = d.x
-      d.children = d.depth > 5? null:d.children;
-      d.isLeaf = d.depth <= 5 && d.children ? false:true;
     });
 
     const gLink = g.append("g")
       .attr("fill", "none")
-      .attr("stroke", "#AAA")
-      .attr("stroke-opacity", 0.8)
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
       .attr("transform", "translate(10,0)");;
 
     const gNode = g.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all")
       .attr("transform", "translate(10,0)");
-
+    
     const gDots = g.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all")
       .attr("transform", "translate(10,0)");
-
+    
 
 
     function update(event, source) {
-      const duration = event?.altKey ? 1000 : 350;
-      const transition = g.transition().duration(duration).ease(d3.easeCircle);
+      const duration = event?.altKey ? 2500 : 250;
+      const transition = g.transition().duration(duration);
       const nodes = root.descendants().reverse();
       const links = root.links();
       clusterLayout(root);
 
       var leaves = root.leaves();
-      height = d3.max(root.descendants(), function (d) { return d.x })-d3.min(root.descendants(), function (d) { return d.x })+2*(margin.top+margin.bottom) + scale_margin;
-      var offset = -1*d3.min(root.descendants(), function (d) { return d.x }) + margin.top+margin.bottom;
+      height = leaves[leaves.length - 1].x - leaves[0].x;
+      console.log("height:" + height);
+      console.log("0:");
+      console.log(leaves[0])
+      console.log("max")
+      console.log(leaves[leaves.length - 1])
       width = d3.max(root.descendants(), function (d) { return d.y }) + 180 + margin.left;
 
-      gNode.attr("transform",d =>`translate(10,${offset})`)
-      gLink.attr("transform",d =>`translate(10,${offset})`)
-      gDots.attr("transform",d =>`translate(10,${offset})`)
-
       //update essentials
-      treeArea.attr("width", width - 180)
+      treeArea.attr("width", width-180)
         .attr("height", height);
 
       //update nodes
@@ -114,11 +96,11 @@ const TreeChart = ({tree,data }) => {
       update_links(source, links, gLink, transition);
 
       //update graph
-      update_graph(nodes, source, height, width, gDots,transition);
+      update_graph(nodes,source, height,width,gDots);
 
 
       select(svg.current).attr("height", height + margin.top + margin.bottom); // adjust height
-      select(svg.current).transition().duration(duration).attr("width", width + margin.right + margin.left + margin.left+6); // adjust height
+      select(svg.current).attr("width", width + margin.right + margin.left + margin.left); // adjust height
     }
 
     function update_nodes(source, nodes, gNode, transition) {
@@ -127,30 +109,25 @@ const TreeChart = ({tree,data }) => {
 
       // Enter any new nodes at the parent's previous position.
       const nodeEnter = node.enter().append("g")
-        .attr("transform", d => source.y0?`translate(${(source.y0)},${source.x0})`:`translate(${(Number(source.y))},${Number(source.x)})`)
+        .attr("transform", d => `translate(${(source.y0)},${source.x0})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
         .on("click", (event, d) => {
           d.children = d.children ? null : d._children;
-          d.isLeaf = d._children ? !d.isLeaf : d.isLeaf;
-
-          d3.selectAll('.backText')
-            .text(d => d.isLeaf ? "":d.data.variable_description)
-          
+          d.isLeaf = d.children ? true : false;
           update(event, d);
         });
 
       nodeEnter.append("circle")
-        .attr("r", d => Math.max(Math.log2(d.data.n) / 2, 2.5))
+        .attr("r", d => Math.max(Math.log2(d.data.n)/2,2.5))
         .attr("fill", d => d._children ? "#555" : "#999")
         .attr("stroke-width", 10);
 
       nodeEnter.append("text")
-        .classed("backText",true)
         .attr("dy", "0.31em")
         .attr("x", 6)
         .attr("text-anchor", "start")
-        .text(d => d.isLeaf ? "":d.data.variable_description)
+        .text(d => d.children && d.isLeaf ? d.data.variable_description : "")
         .clone(true).lower()
         .attr("stroke-linejoin", "round")
         .attr("stroke-width", 3)
@@ -191,7 +168,7 @@ const TreeChart = ({tree,data }) => {
           const o = { x: source.x0, y: source.y0 };
           return diagonal({ source: o, target: o });
         })
-        .attr("stroke-width", d => 1 + Math.log2(d.target.data.n));
+        .attr("stroke-width", d => 1+Math.log2(d.target.data.n));
 
       // Transition links to their new position.
       link.merge(linkEnter).transition(transition)
@@ -205,47 +182,36 @@ const TreeChart = ({tree,data }) => {
         });
     }
 
-    function update_graph(nodes, source, height, width, gDots,transition) {
-      graphArea.attr("height", height);
-      graphArea.transition(transition).attr("x", width - 180 + margin.right);
-
-      //draw scale
-
+    function update_graph(nodes, source,height,width, gDots) {
+      graphArea.attr("height",height);
+      graphArea.attr("x",width-180+margin.right);
       const dot = gDots.selectAll("g")
         .data(nodes, d => d.id);
 
-      // Enter any new nodes at the parent's previous position.
+        // Enter any new nodes at the parent's previous position.
       const dotEnter = dot.enter().append("g")
-        .attr("transform", d => `translate(${width},${0})`)
-        .attr("fill-opacity", 0)
-        .attr("stroke-opacity", 0)
-        .on("click", (event, d) => {
-          d.children = d.children ? null : d._children;
-          d.isLeaf = !d.isLeaf;
-          update(event, d);
-        });
+      .attr("transform", d => `translate(${width},${0})`)
+      .attr("fill-opacity", 0)
+      .attr("stroke-opacity", 0);
 
       dotEnter.append("circle")
-        .attr("r", d => 3 + Math.log2(d.data.n))
-        .attr("y", source.y0)
-        .attr("fill", function (d) {
-          return `rgb(${parseFloat(d.data.classification) * 25},${255 - parseFloat(d.data.classification) * 25},100)`;
-        })
-        .attr("stroke-width", 10);
+      .attr("r", d => 3+Math.log2(d.data.n))
+      .attr("y",source.y0)
+      .attr("fill", function(d) {
+        return `rgb(${parseFloat(d.data.classification)*25},${255-parseFloat(d.data.classification)*25},100)`; })
+      .attr("stroke-width", 10);
 
       // Transition nodes to their new position.
-      const dotUpdate = dot.merge(dotEnter).transition(transition)
-        .attr("transform", d => `translate(${width - 180+3 - margin.left + (18 * parseFloat(d.data.classification))},${d.x})`) // turn data.classification to int for it to work
-        .attr("fill-opacity", d => d.children ? 0 : 1)
-        .attr("pointer-events", d => d.children ? "none":"all")
+      const dotUpdate = dot.merge(dotEnter).transition()
+        .attr("transform", d => `translate(${width-180-margin.left+(18*parseFloat(d.data.classification))},${d.x})`) // turn data.classification to int for it to work
+        .attr("fill-opacity", d => d.children ? 0:1)
         .attr("stroke-opacity", 1);
 
       // Transition exiting nodes to the parent's new position.
       const dotExit = dot.exit().transition().remove()
-        .attr("transform", d => `translate(${width + margin.left},${source.x})`)
+        .attr("transform", d => `translate(${width+margin.left},${source.x})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
-        .attr("pointer-events", "none");
     }
 
     // Stash the old positions for transition.
