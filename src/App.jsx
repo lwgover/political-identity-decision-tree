@@ -9,7 +9,7 @@ function App() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    d3.json("https://decision-tree.fly.dev/tree/DP54,DP1,DP2").then((d) => { //http://localhost:5000/tree/DP54,DP3,DP5,DP1,DP2").then((d) => { //
+    d3.json("https://decision-tree.fly.dev/tree/DP54,DP1,DP3,DP4").then((d) => { //http://localhost:5000/tree/DP54,DP3,DP5,DP1,DP2").then((d) => { //
       setData(d);
       setLoading(false);
     });

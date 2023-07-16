@@ -13,7 +13,8 @@ var height = 600;
 const margin = { top: 10, right: 10, bottom: 10, left: 10 };
 const scale_margin = 20;
 
-var counter = 0
+var textWidths = [];
+var maxTextWidth = 0;
 
 const TreeChart = ({tree,data }) => {
   console.log(data);
@@ -49,17 +50,26 @@ const TreeChart = ({tree,data }) => {
 
     g.append("rect").attr("fill", "rgba(0,0,0,0.1)").attr("width", 20000).attr("height", 20000).attr("clip-path", "url(#graph-area)");
 
-    var xScale = d3.scaleLinear().domain([data.min,data.max])
-        .range([0, 200]);
+    var xScale = d3.scaleOrdinal().domain(data.meanings.map(d => d[1])).range([0, 160]);
+    var xAxis = d3.axisBottom();
+    xAxis.scale(xScale)
+    .ticks(data.meanings.length);
 
-      var xAxis = d3.axisBottom();
-      xAxis.scale(xScale)
-      .ticks(data.meanings.length);
-
-    graphArea.append("g")
+    var scale = g.append("g")
         .attr("class", "axis") //Assign "axis" class .call(xAxis);
         .attr("transform", "translate(10,10)")
         .call(xAxis);
+    scale.selectAll("text")  
+     .style("text-anchor", "end");
+    
+    scale.selectAll("text").each(function(d,i){
+      var textWidth = this.getComputedTextLength()
+      textWidths.push(textWidth)
+    })
+
+    console.log(textWidths)
+    maxTextWidth = Math.max(...textWidths)
+    console.log("max text width" + maxTextWidth)
 
 
     root.descendants().reverse().forEach((d, i) => {
@@ -117,7 +127,7 @@ const TreeChart = ({tree,data }) => {
       update_graph(nodes, source, height, width, gDots,transition);
 
 
-      select(svg.current).attr("height", height + margin.top + margin.bottom); // adjust height
+      select(svg.current).attr("height", height + margin.top + margin.bottom+(maxTextWidth)); // adjust height
       select(svg.current).transition().duration(duration).attr("width", width + margin.right + margin.left + margin.left+6); // adjust height
     }
 
@@ -135,7 +145,7 @@ const TreeChart = ({tree,data }) => {
           d.isLeaf = d._children ? !d.isLeaf : d.isLeaf;
 
           d3.selectAll('.backText')
-            .text(d => d.isLeaf ? "":d.data.variable_description)
+            .text(d => d.isLeaf || d.data.variable_description == null ? "":d.data.variable_description)
           
           update(event, d);
         });
@@ -208,7 +218,17 @@ const TreeChart = ({tree,data }) => {
     function update_graph(nodes, source, height, width, gDots,transition) {
       graphArea.attr("height", height);
       graphArea.transition(transition).attr("x", width - 180 + margin.right);
+      scale.transition(transition).attr("transform", `translate(${width - 170+margin.right+3},${height-20})`)
+      if (root.isLeaf) {
+        scale.selectAll("text").transition(transition).attr("transform", "rotate(-87.5)")
+        .attr("dx", "-.8em")
+        .attr("dy", "-.48em");
 
+      }else{
+        scale.selectAll("text").transition(transition).attr("transform", "rotate(-65)")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em"); 
+      }
       //draw scale
 
       const dot = gDots.selectAll("g")
