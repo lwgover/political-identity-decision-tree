@@ -1,5 +1,7 @@
 <h1 align="center">Political Identity Regression Tree</h1>
-<a href="https://www.lucasgover.com/political-identity-decision-tree" align="center">[Live Demo]</a>
+<h2 align="center">
+<a href="https://www.lucasgover.com/political-identity-decision-tree">[Live Demo]</a>
+<\h2>
 
 <p align="center">
   <a href="#description">Description</a> •
