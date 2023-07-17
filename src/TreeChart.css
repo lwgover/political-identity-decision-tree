@@ -6,3 +6,6 @@ div.scroll {
     overflow-y: hidden;
     white-space: nowrap;
 }
+.text {
+    font-family: Georgia, Times, "Times New Roman", serif;
+}

@@ -1,8 +1,10 @@
 import TreeChart from './TreeChart'
 import './App.css';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import * as d3 from 'd3'
 import Footer from "./Footer.jsx"
+import Sidebar from "./Sidebar.jsx"
+import Description from "./Description.jsx"
 
 function App() {
   const [data, setData] = React.useState([]);
@@ -15,13 +17,17 @@ function App() {
     });
     return () => undefined;
   }, []);
- return (
-   <div className="App">
-      <h2>American Values Regression Tree</h2>
-      {loading && <div>App is Loading</div>}
-      {!loading &&<TreeChart tree = {data.tree} data={data.data}/>}
-      <Footer/>
-   </div>
- );
+  return (
+    <div className="App">
+      <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} />
+      <div id="content-wrap">
+        <h2>American Values Regression Tree</h2>
+        {loading && <div>App is Loading</div>}
+        {!loading && <TreeChart tree={data.tree} data={data.data} />}
+        <Description />
+      </div>
+      <Footer />
+    </div>
+  );
 }
 export default App;
