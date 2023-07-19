@@ -19,14 +19,16 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <Sidebar pageWrapId={'page-wrap'} outerContainerId={'outer-container'} />
-      <div id="content-wrap">
-        <h2>American Values Regression Tree</h2>
-        {loading && <div>App is Loading</div>}
-        {!loading && <TreeChart tree={data.tree} data={data.data} />}
-        <Description />
+      <Sidebar/>
+      <div class="not-sidebar">
+        <div id="content-wrap" left="200px">
+          <h2>American Values Regression Tree</h2>
+          {loading && <div>App is Loading</div>}
+          {!loading && <TreeChart tree={data.tree} data={data.data} />}
+          <Description />
+        </div>
+        <Footer/>
       </div>
-      <Footer />
     </div>
   );
 }
