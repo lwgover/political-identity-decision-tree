@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/political-identity-decision-tree/static/css/main.92e9fdee.css",
-    "main.js": "/political-identity-decision-tree/static/js/main.08eae80f.js",
+    "main.css": "/political-identity-decision-tree/static/css/main.880e7e6d.css",
+    "main.js": "/political-identity-decision-tree/static/js/main.a697018a.js",
     "index.html": "/political-identity-decision-tree/index.html",
-    "main.92e9fdee.css.map": "/political-identity-decision-tree/static/css/main.92e9fdee.css.map",
-    "main.08eae80f.js.map": "/political-identity-decision-tree/static/js/main.08eae80f.js.map"
+    "main.880e7e6d.css.map": "/political-identity-decision-tree/static/css/main.880e7e6d.css.map",
+    "main.a697018a.js.map": "/political-identity-decision-tree/static/js/main.a697018a.js.map"
   },
   "entrypoints": [
-    "static/css/main.92e9fdee.css",
-    "static/js/main.08eae80f.js"
+    "static/css/main.880e7e6d.css",
+    "static/js/main.a697018a.js"
   ]
 }
