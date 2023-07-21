@@ -1,7 +1,6 @@
 .Menu {
     width: 100%;
     background-color: #ffffff;
-    display:false;
 }
 
 .dropdown {
@@ -27,14 +26,14 @@
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     width: 100%;
-    border-top-color: #EE4266;
+    border-color: #EE4266;
 }
 
 .Menu .dropdown-menu {
     background-color: #EE4266;
     border-color: #EE4266;
     border-width: 10px;
-    color:white;
+    color: white;
 }
 
 .Menu .arrow {
@@ -44,21 +43,27 @@
     padding: 3px;
 }
 
+
+.Menu .dropdown-menu * {
+    box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
 .Menu .dropdown-menu .column {
     float: left;
-  }
-  
-.Menu .dropdown-menu .left {
     width: 50%;
-  }
-  
-.Menu .dropdown-menu.right {
-    width: 50%;
-  }
+}
 
 /* Clear floats after the columns */
-.Menu .dropdown-menu .row {
+.Menu .dropdown-menu .row:after {
     content: "";
     display: table;
     clear: both;
+}
+
+/* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+    .Menu .dropdown-menu .column {
+        width: 100%;
+    }
 }

@@ -9,6 +9,7 @@ import Menu from "./Menu.jsx"
 function App() {
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const [showMenu, setMenu] = React.useState(false);
 
   React.useEffect(() => {
     d3.json("https://decision-tree.fly.dev/tree/DP70,DP1,DP2,DP3,DP4,DP5").then((d) => { //http://localhost:5000/tree/DP54,DP3,DP5,DP1,DP2").then((d) => { //
@@ -24,7 +25,7 @@ function App() {
         <hr/>
       </div>
       <div id="content-wrap">
-        <Menu />
+        <Menu showMenu={showMenu} setMenu={setMenu}/>
         {loading && <div style={{ "backgroundColor": '#FFFFFF', "padding": '25px' }}>App is Loading</div>}
         {!loading && <TreeChart tree={data.tree} data={data.data} />}
         <Description />
