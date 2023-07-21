@@ -1,18 +1,51 @@
+* {
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+}
+p{
+  margin-block-start:1px;
+  margin-block-end:1px;
+}
+h1 {
+  padding: 5px;
+  margin-block-start:1px;
+  margin-block-end:1px;
+}
 .App {
-  min-height: 100vh;
   position: relative;
   display: flex;
   text-align: center;
   flex-direction: column;
-  min-height: 100vh;
   font-family: Georgia, Times, "Times New Roman", serif;
+  background-color:#2C365E;;
+  padding: 0px;
+  min-height: 100vh;
 }
+
 #content-wrap {
-  padding-bottom: 2.5rem;    /* Footer height */
+  padding-bottom: 2.5rem;
+  background-color: #2C365E;
+  /* Footer height */
 }
+
 .description {
   padding: 20px;
 }
-.menu {
-  background-color: rgb(45, 30, 75)
+
+div .title {
+  background-color: #D81E5B;
+  color: white;
+  font-size: 24px;
+  padding: 0px;
+}
+.spacing {
+  height: 50px;
+  background-color: #ffffff;
+}
+hr {
+  border: 2px solid white;
+  border-radius: 5px;
+}
+.title hr {
+  width: 60%;
 }

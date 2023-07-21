@@ -3,9 +3,13 @@
     left:0px;
     bottom: 0;
     width: 100%;
-    padding: 10px;
-    background-color: rgb(232, 231, 231);
+    background-color: #011627;
+    color:#3d5282;
+    padding-top: 20px;
   }
+#footer a {
+color: #3d5282;
+}
 
 h4 {
     font-size: 8pt;

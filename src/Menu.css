@@ -1,0 +1,64 @@
+.Menu {
+    width: 100%;
+    background-color: #ffffff;
+    display:false;
+}
+
+.dropdown {
+    border-radius: 20px;
+}
+
+.Menu h1 {
+    color: white;
+}
+
+.Menu hr {
+    width: 500px;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.Menu .dropdown-button {
+    text-align: center;
+    text-decoration: none;
+    font-size: 4px;
+    border: 4px solid #EE4266;
+    background-color: #EE4266;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    width: 100%;
+    border-top-color: #EE4266;
+}
+
+.Menu .dropdown-menu {
+    background-color: #EE4266;
+    border-color: #EE4266;
+    border-width: 10px;
+    color:white;
+}
+
+.Menu .arrow {
+    border: solid #ffffff;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.Menu .dropdown-menu .column {
+    float: left;
+  }
+  
+.Menu .dropdown-menu .left {
+    width: 50%;
+  }
+  
+.Menu .dropdown-menu.right {
+    width: 50%;
+  }
+
+/* Clear floats after the columns */
+.Menu .dropdown-menu .row {
+    content: "";
+    display: table;
+    clear: both;
+}

@@ -1,6 +1,17 @@
 .description {
     display: inline-block;
     text-align: left;
-    width: 60%;
+    width: 50%;
     padding-bottom: 40px;
+    background-color: #2C365E;
+}
+.desc-header {
+    color: rgb(255, 255, 255);
+}
+.desc-text {
+    color: #DDDDFF;
+}
+
+.description a {
+    color: #8EE3EF;
 }

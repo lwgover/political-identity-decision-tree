@@ -17,7 +17,6 @@ var textWidths = [];
 var maxTextWidth = 0;
 
 const TreeChart = ({tree,data }) => {
-  console.log(data);
   const svg = useRef(null);
   useEffect(() => {
     renderChart(tree,data)
@@ -25,7 +24,7 @@ const TreeChart = ({tree,data }) => {
   const renderChart = (tree,data) => {
     var clusterLayout = function (node) {
       node.sort();
-      d3.cluster().nodeSize([15, 140])(node); // .size is the wrong function, rewrite later to specify node size or something
+      d3.cluster().nodeSize([20, 160])(node); // .size is the wrong function, rewrite later to specify node size or something
     }
     // Give the data to this cluster layout:
     var root = d3.hierarchy(tree, function (d) {
@@ -67,18 +66,15 @@ const TreeChart = ({tree,data }) => {
       textWidths.push(textWidth)
     })
 
-    console.log(textWidths)
     maxTextWidth = Math.max(...textWidths)
-    console.log("max text width" + maxTextWidth)
-
 
     root.descendants().reverse().forEach((d, i) => {
       d.id = i;
       d._children = d.children;
       d.y0 = d.y
       d.x0 = d.x
-      d.children = d.depth > 5? null:d.children;
-      d.isLeaf = d.depth <= 5 && d.children ? false:true;
+      d.children = d.depth > 3? null:d.children;
+      d.isLeaf = d.depth <= 3 && d.children ? false:true;
     });
 
     const gLink = g.append("g")
@@ -164,7 +160,7 @@ const TreeChart = ({tree,data }) => {
         .clone(true).lower()
         .attr("stroke-linejoin", "round")
         .attr("stroke-width", 3)
-        .attr("stroke", "white");
+        .attr("stroke", "#F3F3FF");
 
       nodeEnter.append("text")
         .attr("dy", "0.31em")
@@ -174,7 +170,7 @@ const TreeChart = ({tree,data }) => {
         .clone(true).lower()
         .attr("stroke-linejoin", "round")
         .attr("stroke-width", 3)
-        .attr("stroke", "white");
+        .attr("stroke", "#F3F3FF");
 
       // Transition nodes to their new position.
       const nodeUpdate = node.merge(nodeEnter).transition(transition)
@@ -278,8 +274,8 @@ const TreeChart = ({tree,data }) => {
     update(null, root);
   }
   return (
-    <div class="scroll">
-      <svg width={width} height={height} ref={svg} style={{ "backgroundColor": 'white' }} />
+    <div class="scroll" style={{ "backgroundColor": '#FFFFFF',"padding": '20px'}}>
+      <svg width={width} height={height} ref={svg} style={{ "backgroundColor": '#F3F3FF' ,"border-radius": '25px'}} />
     </div>);
 }
 
