@@ -17,7 +17,7 @@ The Regression Tree Visual is an interactive tool that helps visualize Americans
 
 ## Project Status
 
-The tree visualization and the backend API to construct trees are completed. Now I need to create a visual to query the API to visualize different types of data.
+The site is almost done! I have the backend complete, and the frontend looks good! I can query the api to construct the tree on the website, and the website will display the tree, and gives users easy ways to create their own trees. 
 
 
 ## License
