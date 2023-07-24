@@ -16,12 +16,12 @@ const scale_margin = 20;
 var textWidths = [];
 var maxTextWidth = 0;
 
-const TreeChart = ({tree,data }) => {
+const TreeChart = ({ tree, data }) => {
   const svg = useRef(null);
   useEffect(() => {
-    renderChart(tree,data)
+    renderChart(tree, data)
   }, [tree]);
-  const renderChart = (tree,data) => {
+  const renderChart = (tree, data) => {
     var clusterLayout = function (node) {
       node.sort();
       d3.cluster().nodeSize([20, 160])(node); // .size is the wrong function, rewrite later to specify node size or something
@@ -33,6 +33,7 @@ const TreeChart = ({tree,data }) => {
     clusterLayout(root);
     root.isLeaf = false;
 
+    select(svg.current).selectAll("g").remove();
     const g = select(svg.current).append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
       .style("font", "10px sans-serif");
@@ -52,16 +53,16 @@ const TreeChart = ({tree,data }) => {
     var xScale = d3.scaleOrdinal().domain(data.meanings.map(d => d[1])).range([0, 160]);
     var xAxis = d3.axisBottom();
     xAxis.scale(xScale)
-    .ticks(data.meanings.length);
+      .ticks(data.meanings.length);
 
     var scale = g.append("g")
-        .attr("class", "axis") //Assign "axis" class .call(xAxis);
-        .attr("transform", "translate(10,10)")
-        .call(xAxis);
-    scale.selectAll("text")  
-     .style("text-anchor", "end");
-    
-    scale.selectAll("text").each(function(d,i){
+      .attr("class", "axis") //Assign "axis" class .call(xAxis);
+      .attr("transform", "translate(10,10)")
+      .call(xAxis);
+    scale.selectAll("text")
+      .style("text-anchor", "end");
+
+    scale.selectAll("text").each(function (d, i) {
       var textWidth = this.getComputedTextLength()
       textWidths.push(textWidth)
     })
@@ -73,8 +74,8 @@ const TreeChart = ({tree,data }) => {
       d._children = d.children;
       d.y0 = d.y
       d.x0 = d.x
-      d.children = d.depth > 3? null:d.children;
-      d.isLeaf = d.depth <= 3 && d.children ? false:true;
+      d.children = d.depth > 3 ? null : d.children;
+      d.isLeaf = d.depth <= 3 && d.children ? false : true;
     });
 
     const gLink = g.append("g")
@@ -103,13 +104,13 @@ const TreeChart = ({tree,data }) => {
       clusterLayout(root);
 
       var leaves = root.leaves();
-      height = d3.max(root.descendants(), function (d) { return d.x })-d3.min(root.descendants(), function (d) { return d.x })+2*(margin.top+margin.bottom) + scale_margin;
-      var offset = -1*d3.min(root.descendants(), function (d) { return d.x }) + margin.top+margin.bottom;
+      height = d3.max(root.descendants(), function (d) { return d.x }) - d3.min(root.descendants(), function (d) { return d.x }) + 2 * (margin.top + margin.bottom) + scale_margin;
+      var offset = -1 * d3.min(root.descendants(), function (d) { return d.x }) + margin.top + margin.bottom;
       width = d3.max(root.descendants(), function (d) { return d.y }) + 180 + margin.left;
 
-      gNode.attr("transform",d =>`translate(10,${offset})`)
-      gLink.attr("transform",d =>`translate(10,${offset})`)
-      gDots.attr("transform",d =>`translate(10,${offset})`)
+      gNode.attr("transform", d => `translate(10,${offset})`)
+      gLink.attr("transform", d => `translate(10,${offset})`)
+      gDots.attr("transform", d => `translate(10,${offset})`)
 
       //update essentials
       treeArea.attr("width", width - 180)
@@ -120,11 +121,11 @@ const TreeChart = ({tree,data }) => {
       update_links(source, links, gLink, transition);
 
       //update graph
-      update_graph(nodes, source, height, width, gDots,transition);
+      update_graph(nodes, source, height, width, gDots, transition);
 
 
-      select(svg.current).attr("height", height + margin.top + margin.bottom+(maxTextWidth)); // adjust height
-      select(svg.current).transition().duration(duration).attr("width", width + margin.right + margin.left + margin.left+6); // adjust height
+      select(svg.current).attr("height", height + margin.top + margin.bottom + (maxTextWidth)); // adjust height
+      select(svg.current).transition().duration(duration).attr("width", width + margin.right + margin.left + margin.left + 6); // adjust height
     }
 
     function update_nodes(source, nodes, gNode, transition) {
@@ -133,7 +134,7 @@ const TreeChart = ({tree,data }) => {
 
       // Enter any new nodes at the parent's previous position.
       const nodeEnter = node.enter().append("g")
-        .attr("transform", d => source.y0?`translate(${(source.y0)},${source.x0})`:`translate(${(Number(source.y))},${Number(source.x)})`)
+        .attr("transform", d => source.y0 ? `translate(${(source.y0)},${source.x0})` : `translate(${(Number(source.y))},${Number(source.x)})`)
         .attr("fill-opacity", 0)
         .attr("stroke-opacity", 0)
         .on("click", (event, d) => {
@@ -141,8 +142,8 @@ const TreeChart = ({tree,data }) => {
           d.isLeaf = d._children ? !d.isLeaf : d.isLeaf;
 
           d3.selectAll('.backText')
-            .text(d => d.isLeaf || d.data.variable_description == null ? "":d.data.variable_description)
-          
+            .text(d => d.isLeaf || d.data.variable_description == null ? "" : d.data.variable_description)
+
           update(event, d);
         });
 
@@ -152,11 +153,11 @@ const TreeChart = ({tree,data }) => {
         .attr("stroke-width", 10);
 
       nodeEnter.append("text")
-        .classed("backText",true)
+        .classed("backText", true)
         .attr("dy", "0.31em")
         .attr("x", 6)
         .attr("text-anchor", "start")
-        .text(d => d.isLeaf ? "":d.data.variable_description)
+        .text(d => d.isLeaf ? "" : d.data.variable_description)
         .clone(true).lower()
         .attr("stroke-linejoin", "round")
         .attr("stroke-width", 3)
@@ -211,19 +212,19 @@ const TreeChart = ({tree,data }) => {
         });
     }
 
-    function update_graph(nodes, source, height, width, gDots,transition) {
+    function update_graph(nodes, source, height, width, gDots, transition) {
       graphArea.attr("height", height);
       graphArea.transition(transition).attr("x", width - 180 + margin.right);
-      scale.transition(transition).attr("transform", `translate(${width - 170+margin.right+3},${height-20})`)
+      scale.transition(transition).attr("transform", `translate(${width - 170 + margin.right + 3},${height - 20})`)
       if (root.isLeaf) {
         scale.selectAll("text").transition(transition).attr("transform", "rotate(-87.5)")
-        .attr("dx", "-.8em")
-        .attr("dy", "-.48em");
+          .attr("dx", "-.8em")
+          .attr("dy", "-.48em");
 
-      }else{
+      } else {
         scale.selectAll("text").transition(transition).attr("transform", "rotate(-65)")
           .attr("dx", "-.8em")
-          .attr("dy", ".15em"); 
+          .attr("dy", ".15em");
       }
       //draw scale
 
@@ -251,9 +252,9 @@ const TreeChart = ({tree,data }) => {
 
       // Transition nodes to their new position.
       const dotUpdate = dot.merge(dotEnter).transition(transition)
-        .attr("transform", d => `translate(${width - 180+3 - margin.left + (18 * parseFloat(d.data.classification))},${d.x})`) // turn data.classification to int for it to work
+        .attr("transform", d => `translate(${width - 180 + 3 - margin.left + (18 * parseFloat(d.data.classification))},${d.x})`) // turn data.classification to int for it to work
         .attr("fill-opacity", d => d.children ? 0 : 1)
-        .attr("pointer-events", d => d.children ? "none":"all")
+        .attr("pointer-events", d => d.children ? "none" : "all")
         .attr("stroke-opacity", 1);
 
       // Transition exiting nodes to the parent's new position.
@@ -274,8 +275,8 @@ const TreeChart = ({tree,data }) => {
     update(null, root);
   }
   return (
-    <div class="scroll" style={{ "backgroundColor": '#FFFFFF',"padding": '20px'}}>
-      <svg width={width} height={height} ref={svg} style={{ "backgroundColor": '#F3F3FF' ,"border-radius": '25px'}} />
+    <div class="scroll" style={{ "background-color": '#FFFFFF', "padding": '20px' }}>
+        <svg class="tree-svg" ref={svg} style={{ "backgroundColor": '#F3F3FF', "border-radius": '25px' }} />
     </div>);
 }
 

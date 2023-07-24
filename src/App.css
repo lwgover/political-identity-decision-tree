@@ -20,6 +20,7 @@ h1 {
   background-color:#2C365E;;
   padding: 0px;
   min-height: 100vh;
+  z-index: 1;
 }
 
 #content-wrap {
@@ -37,6 +38,8 @@ div .title {
   color: white;
   font-size: 24px;
   padding: 0px;
+  position: relative;
+  z-index: 10;
 }
 .spacing {
   height: 50px;
@@ -48,4 +51,14 @@ hr {
 }
 .title hr {
   width: 60%;
+}
+.description-container {
+  -moz-box-shadow: 0px 0px 10px #aaa;
+    -webkit-box-shadow: 0px 0px 10px #aaa;
+    box-shadow: 0px 0px 10px #aaa;
+}
+.random-10px-padding {
+  padding: 0px;
+  padding-top:10px;
+  background-color: white;
 }

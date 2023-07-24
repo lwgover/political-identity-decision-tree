@@ -2,8 +2,13 @@
     display: inline-block;
     text-align: left;
     width: 50%;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
     background-color: #2C365E;
+}
+@media (max-width: 850px) {
+    .description {
+        width: 80%;
+    }
 }
 .desc-header {
     color: rgb(255, 255, 255);

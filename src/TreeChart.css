@@ -9,3 +9,14 @@ div.scroll {
 .text {
     font-family: Georgia, Times, "Times New Roman", serif;
 }
+
+/** perhaps delete this later */
+.tree-svg {
+    border-width: 4px;
+  border-color: #7c7c91;
+  border-style: solid;
+  border-radius: 25px;
+  -moz-box-shadow: 0px 0px 10px #999;
+    -webkit-box-shadow: 0px 0px 10px #999;
+    box-shadow: 0px 0px 10px #999;
+}
