@@ -4,8 +4,37 @@ import * as d3 from 'd3'
 
 var setDVfn = (a) => console.log("running init setDV");
 var setIVfn = (a) => console.log("running init setIV");
-var IVvar = {"variables":[]};
+var setColorschemefn = (a) => console.log("running init setColorscheme");
+var IVvar = { "variables": [] };
 
+export function nameToColorScheme(string) {
+  switch (string) {
+    case 'red-to-blue':
+      return d3.scaleLinear()
+        .domain([1, 10])
+        .range(["#FF0000", "#0000FF"]);
+
+    case 'blue-to-red':
+      return d3.scaleLinear()
+        .domain([1, 10])
+        .range(["#FF0000", "#0000FF"]);
+
+    case 'categorical':
+      return d3.scaleLinear()
+        .domain([1, 10])
+        .range(["#FF0000", "#0000FF"]);
+
+    case 'black':
+      return d3.scaleLinear()
+        .domain([1, 10])
+        .range(["#000000", "#000000"]);
+
+    default:
+      return d3.scaleLinear()
+      .domain([1, 10])
+      .range(["#55FF22", "#5522FF"]);
+  }
+}
 
 const options = [
   {
@@ -209,7 +238,7 @@ const options = [
     "value": "DP50"
   },
   {
-    "name": "Having experts},{name: not government, make decisions according to what they think is best for the country",
+    "name": "Having experts, not government, make decisions according to what they think is best for the country",
     "value": "DP51"
   },
   {
@@ -297,11 +326,57 @@ const options = [
     "value": "DP72"
   }
 ];
-let optionsDict = Object.assign({}, ...options.map((x) => ({[x.value]: x.name})));
+
+const colorSchemeOptions = [
+  {
+    'name': 'red-to-blue','value': 'red-to-blue'
+  },
+  {
+    'name': 'blue-to-red','value': 'blue-to-red'
+  },
+  {
+    'name': 'categorical','value': 'categorical'
+  },
+  {
+    'name': 'black','value': 'black'
+  }
+]
+let optionsDict = Object.assign({}, ...options.map((x) => ({ [x.value]: x.name })));
+
+const handleChangeColorScheme = event => {
+  console.log(event);
+  setColorschemefn({ "variables": [{ "name": optionsDict[event], "value": event }] });
+};
+
+function renderColorSchemeOption(props, option, snapshot, className) {
+  return (
+    <button {...props} className={className} type="button">
+      <span>
+        <div className={option.name}></div>
+      </span>
+    </button>
+  );
+}
+
+
+export const ColorschemeSelectSearch = ({ setDV }) => {
+
+  setDVfn = setDV;
+
+  return <div className="custom-select-search-container">
+    <SelectSearch
+      className="select-search"
+      options={colorSchemeOptions}
+      renderOption={renderColorSchemeOption}
+      search
+      placeholder={"Color Scheme"}
+      onChange={handleChangeColorScheme}
+    />
+  </div>
+};
 
 const handleChangeDV = event => {
-  console.log(event);
-  setDVfn({"variables":[{"name":optionsDict[event],"value":event}]});
+  setDVfn({ "variables": [{ "name": optionsDict[event], "value": event }] });
 };
 
 function renderDVOption(props, option, snapshot, className) {
@@ -315,7 +390,7 @@ function renderDVOption(props, option, snapshot, className) {
 }
 
 
-export const DVSelectSearch = ({setDV}) => {
+export const DVSelectSearch = ({ setDV }) => {
 
   setDVfn = setDV;
 
@@ -332,9 +407,8 @@ export const DVSelectSearch = ({setDV}) => {
 };
 
 const handleChangeIV = event => {
-  console.log(event);
-  if(!(IVvar.variables.map((a) => a.value).includes(event))){
-    setIVfn({"variables":[...IVvar.variables,{"name":optionsDict[event],"value":event}]});
+  if (!(IVvar.variables.map((a) => a.value).includes(event))) {
+    setIVfn({ "variables": [...IVvar.variables, { "name": optionsDict[event], "value": event }] });
   }
 };
 function renderIVOption(props, option, snapshot, className) {
@@ -348,7 +422,7 @@ function renderIVOption(props, option, snapshot, className) {
 }
 
 
-export const IVSelectSearch = ({IV,setIV}) => {
+export const IVSelectSearch = ({ IV, setIV }) => {
 
   setIVfn = setIV;
   IVvar = IV;
@@ -379,7 +453,7 @@ function renderOption(props, option, snapshot, className) {
 }
 
 
-const VariableSelectSearch = ({ default_value}) => {
+const VariableSelectSearch = ({ default_value }) => {
 
   return <div className="custom-select-search-container">
     <SelectSearch

@@ -7,18 +7,45 @@ import SelectedVariables from "./SelectedVariables";
 
 var menuDown = false;
 
-const Menu = ({ DV, setDV, IV, setIV, setLoading, setData }) => {
-    console.log("set loading:")
-    console.log(setLoading);
+const Menu = ({setLoading, setData, setFailedLoad, setLastQuery}) => {
+    const [DV, setDV] = React.useState({"variables":[ {
+        "name": "Left vs right",
+        "value": "DP70"
+      }]});
+      const [IV, setIV] = React.useState({"variables":[{
+        "name": "Biological sex",
+        "value": "DP1"
+      },
+      {
+        "name": "Ethnicity",
+        "value": "DP3"
+      },
+      {
+        "name": "Education",
+        "value": "DP5"
+      },]});
+
+    
+    
     const resetData = () => {
+        if(DV.variables.length <= 0){
+            alert("Plase enter a question before submitting.")
+            return;
+        }
+        if(IV.variables.length <= 0){
+            alert("Plase enter one or more identity classifications before submitting.")
+            return;
+        }
         setLoading(true);
         var query = DV.variables[0].value
         for(var i = 0; i < IV.variables.length; i++){
             query += ",";
             query += IV.variables[i].value
         }
-        console.log(query)
-        d3.json("https://decision-tree.fly.dev/tree/" + query).then((d) => {
+        setLastQuery(query)
+        d3.json("https://decision-tree.fly.dev/tree/" + query)
+        .catch((d)=> setFailedLoad(true))
+        .then((d) => {
             setData(d);
             setLoading(false);
         });
@@ -81,7 +108,7 @@ const Menu = ({ DV, setDV, IV, setIV, setLoading, setData }) => {
                         </div>
                     </div>
                 </div>
-                <div className="dropdown-button"><p><i class="arrow"></i></p></div>
+                <div className="dropdown-button"><p><i className="arrow"></i></p></div>
             </div>
         </div>
     );

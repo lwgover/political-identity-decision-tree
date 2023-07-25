@@ -19,12 +19,13 @@ var maxTextWidth = 0;
 const TreeChart = ({ tree, data }) => {
   const svg = useRef(null);
   useEffect(() => {
+    maxTextWidth = 0;
     renderChart(tree, data)
   }, [tree]);
   const renderChart = (tree, data) => {
     var clusterLayout = function (node) {
       node.sort();
-      d3.cluster().nodeSize([20, 160])(node); // .size is the wrong function, rewrite later to specify node size or something
+      d3.cluster().nodeSize([30, 160])(node); // .size is the wrong function, rewrite later to specify node size or something
     }
     // Give the data to this cluster layout:
     var root = d3.hierarchy(tree, function (d) {
@@ -74,8 +75,8 @@ const TreeChart = ({ tree, data }) => {
       d._children = d.children;
       d.y0 = d.y
       d.x0 = d.x
-      d.children = d.depth > 3 ? null : d.children;
-      d.isLeaf = d.depth <= 3 && d.children ? false : true;
+      d.children = d.depth > 1 ? null : d.children;
+      d.isLeaf = d.depth <= 1 && d.children ? false : true;
     });
 
     const gLink = g.append("g")
@@ -275,8 +276,8 @@ const TreeChart = ({ tree, data }) => {
     update(null, root);
   }
   return (
-    <div class="scroll" style={{ "background-color": '#FFFFFF', "padding": '20px' }}>
-        <svg class="tree-svg" ref={svg} style={{ "backgroundColor": '#F3F3FF', "border-radius": '25px' }} />
+    <div class="scroll" style={{ "backgroundColor": '#FFFFFF', "padding": '20px' }}>
+        <svg class="tree-svg" ref={svg} style={{ "backgroundColor": '#F3F3FF', "borderRadius": '25px' }} />
     </div>);
 }
 
