@@ -16,7 +16,36 @@ const scale_margin = 20;
 var textWidths = [];
 var maxTextWidth = 0;
 
-const TreeChart = ({ tree, data }) => {
+function nameToColorScheme(string, min, max) {
+  console.log("string: ")
+  console.log(string);
+  switch (string.variables[0].name) {
+    case 'red-to-blue':
+      return d3.scaleLinear()
+        .domain([min, max])
+        .range(["#FF0000", "#0000FF"]);
+
+    case 'blue-to-red':
+      return d3.scaleLinear()
+        .domain([min, max])
+        .range(["#FF0000", "#0000FF"]);
+
+    case 'categorical':
+      return d3.scaleOrdinal(d3.schemeCategory10);//.domain([min, max]);
+
+    case 'black':
+      return d3.scaleLinear()
+        .domain([min, max])
+        .range(["#000000", "#000000"]);
+
+    default:
+      return d3.scaleLinear()
+      .domain([min, max])
+      .range(["#55FF22", "#5522FF"]);
+  }
+}
+
+const TreeChart = ({ tree, data, colorScheme}) => {
   const svg = useRef(null);
   useEffect(() => {
     maxTextWidth = 0;
@@ -50,10 +79,17 @@ const TreeChart = ({ tree, data }) => {
       .attr("width", 186);
 
     g.append("rect").attr("fill", "rgba(0,0,0,0.1)").attr("width", 20000).attr("height", 20000).attr("clip-path", "url(#graph-area)");
-
-    var xScale = d3.scaleOrdinal().domain(data.meanings.map(d => d[1])).range([0, 160]);
+    
+    console.log(data);
+    var meaningsPositions = []
+    for(var i = 0; i < data.meanings.length; i++){
+      meaningsPositions = [...meaningsPositions, (data.max-data.min > 2? 0 : 20) + i*((data.max-data.min > 2 ? 160 : 120)/(data.meanings.length-1))]
+    }
+    console.log(meaningsPositions);
+    var xScaleTics = d3.scaleOrdinal().domain(data.meanings.map(d => d[1])).range(meaningsPositions);
+    var xScale = d3.scaleLinear().domain([data.min,data.max]).range([meaningsPositions[0],meaningsPositions[meaningsPositions.length-1]]);
     var xAxis = d3.axisBottom();
-    xAxis.scale(xScale)
+    xAxis.scale(xScaleTics)
       .ticks(data.meanings.length);
 
     var scale = g.append("g")
@@ -243,17 +279,19 @@ const TreeChart = ({ tree, data }) => {
           update(event, d);
         });
 
+      const colorSchemeFn = nameToColorScheme(colorScheme,data.min,data.max);
+
       dotEnter.append("circle")
         .attr("r", d => 3 + Math.log2(d.data.n))
         .attr("y", source.y0)
         .attr("fill", function (d) {
-          return `rgb(${parseFloat(d.data.classification) * 25},${255 - parseFloat(d.data.classification) * 25},100)`;
+          return colorSchemeFn(d.data.classification);
         })
         .attr("stroke-width", 10);
 
       // Transition nodes to their new position.
       const dotUpdate = dot.merge(dotEnter).transition(transition)
-        .attr("transform", d => `translate(${width - 180 + 3 - margin.left + (18 * parseFloat(d.data.classification))},${d.x})`) // turn data.classification to int for it to work
+        .attr("transform", d => `translate(${width - 180 + margin.right + 3 + xScale(d.data.classification)},${d.x})`) // turn data.classification to int for it to work
         .attr("fill-opacity", d => d.children ? 0 : 1)
         .attr("pointer-events", d => d.children ? "none" : "all")
         .attr("stroke-opacity", 1);

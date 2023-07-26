@@ -2,12 +2,12 @@ import React, { useEffect } from "react"
 import './select-search.css'
 import * as d3 from 'd3'
 import './Menu.css'
-import VariableSelectSearch, { DVSelectSearch, IVSelectSearch } from './VariableSelectSearch';
+import VariableSelectSearch, { DVSelectSearch, IVSelectSearch, ColorschemeSelectSearch} from './VariableSelectSearch';
 import SelectedVariables from "./SelectedVariables";
 
-var menuDown = false;
+var menuDown = true;
 
-const Menu = ({setLoading, setData, setFailedLoad, setLastQuery}) => {
+const Menu = ({setLoading, setData, setFailedLoad, setLastQuery, setColorScheme, colorScheme}) => {
     const [DV, setDV] = React.useState({"variables":[ {
         "name": "Left vs right",
         "value": "DP70"
@@ -86,24 +86,23 @@ const Menu = ({setLoading, setData, setFailedLoad, setLastQuery}) => {
                     <div className="dropdown-menu-contents" style={{ "display": "none" }}>
                         <div className="row">
                             <div className="column">
-                                <h2>Identity Classifications</h2>
-                                <hr />
-                                <SelectedVariables variables_list={IV} set_variables_list={setIV} />
-                                <IVSelectSearch IV={IV} setIV={setIV} />
-
-                            </div>
-                            <div className="column">
                                 <h2>Question of Interest</h2>
                                 <hr />
                                 <SelectedVariables variables_list={DV} set_variables_list={setDV} />
                                 <DVSelectSearch setDV={setDV} />
+                                <h2>Color Scheme</h2>
+                                <hr />
+                                <SelectedVariables variables_list={colorScheme} set_variables_list={setColorScheme} />
+                                <ColorschemeSelectSearch setColorSchemefn={setColorScheme}/>
                             </div>
-                        </div>
-                        <div className="row">
                             <div className="column">
-                            </div>
-                            <div className="column">
-                                <div className="submit" onClick={resetData}>submit</div>
+                                <h2>Identity Classifications</h2>
+                                <hr />
+                                <SelectedVariables variables_list={IV} set_variables_list={setIV} />
+                                <IVSelectSearch IV={IV} setIV={setIV} />
+                                <hr/>
+                                <div style={{"padding": "20px"}}><div className="submit" onClick={resetData}>submit</div></div>
+
                             </div>
                         </div>
                     </div>

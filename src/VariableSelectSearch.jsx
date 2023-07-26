@@ -7,35 +7,6 @@ var setIVfn = (a) => console.log("running init setIV");
 var setColorschemefn = (a) => console.log("running init setColorscheme");
 var IVvar = { "variables": [] };
 
-export function nameToColorScheme(string) {
-  switch (string) {
-    case 'red-to-blue':
-      return d3.scaleLinear()
-        .domain([1, 10])
-        .range(["#FF0000", "#0000FF"]);
-
-    case 'blue-to-red':
-      return d3.scaleLinear()
-        .domain([1, 10])
-        .range(["#FF0000", "#0000FF"]);
-
-    case 'categorical':
-      return d3.scaleLinear()
-        .domain([1, 10])
-        .range(["#FF0000", "#0000FF"]);
-
-    case 'black':
-      return d3.scaleLinear()
-        .domain([1, 10])
-        .range(["#000000", "#000000"]);
-
-    default:
-      return d3.scaleLinear()
-      .domain([1, 10])
-      .range(["#55FF22", "#5522FF"]);
-  }
-}
-
 const options = [
   {
     "name": "Biological sex",
@@ -339,29 +310,30 @@ const colorSchemeOptions = [
   },
   {
     'name': 'black','value': 'black'
-  }
+  },
+  {
+    'name': 'default','value': 'default'
+  },
+
 ]
 let optionsDict = Object.assign({}, ...options.map((x) => ({ [x.value]: x.name })));
 
 const handleChangeColorScheme = event => {
-  console.log(event);
-  setColorschemefn({ "variables": [{ "name": optionsDict[event], "value": event }] });
+  setColorschemefn({ "variables": [{ "name": event, "value": event }] });
 };
 
 function renderColorSchemeOption(props, option, snapshot, className) {
   return (
     <button {...props} className={className} type="button">
-      <span>
-        <div className={option.name}></div>
-      </span>
+      <span>{option.name}</span>
     </button>
   );
 }
 
 
-export const ColorschemeSelectSearch = ({ setDV }) => {
+export const ColorschemeSelectSearch = ({ setColorSchemefn }) => {
 
-  setDVfn = setDV;
+  setColorschemefn = setColorSchemefn;
 
   return <div className="custom-select-search-container">
     <SelectSearch
