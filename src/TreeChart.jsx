@@ -23,12 +23,12 @@ function nameToColorScheme(string, min, max) {
     case 'red-to-blue':
       return d3.scaleLinear()
         .domain([min, max])
-        .range(["#FF0000", "#0000FF"]);
+        .range(["#FF4365", "#6543FF"]);
 
     case 'blue-to-red':
       return d3.scaleLinear()
         .domain([min, max])
-        .range(["#FF0000", "#0000FF"]);
+        .range(["#6543FF", "#FF4365"]);
 
     case 'categorical':
       return d3.scaleOrdinal(d3.schemeCategory10);//.domain([min, max]);
