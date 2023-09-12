@@ -60,14 +60,18 @@ const Menu = ({setLoading, setData, setFailedLoad, setLastQuery, setColorScheme,
         const contents = d3.select(".dropdown-menu-contents");
 
         const update = () => {
-            button.style("background-color", "#D81E5B").style("border-color", "#D81E5B").transition().duration(200).ease(d3.easeCircle).style("background-color", "#EE4266").style("border-color", "#EE4266")
+            button.style("background-color", "#D81E5B").style("border-color", "#D81E5B").transition().duration(200).ease(d3.easeCircle).style("background-color", "#EE4266").style("border-color", "#EE4266");
             if (menuDown) {
-                contents.transition().duration(350).ease(d3.easeCircle).style("display", null);
-                menu.transition().duration(350).ease(d3.easeCircle).style("height", "100%")
+                //contents.transition().duration(350).ease(d3.easeCircle).style("display", null);
+                console.log(contents.node().getBoundingClientRect().bottom - contents.node().getBoundingClientRect().bottom);
+                
+                menu.transition().duration(350).ease(d3.easeCircle).style("height", `${contents.node().getBoundingClientRect().height}px`);
+                //contents.transition().duration(3500).ease(d3.easeCircle).style("height", "0%");
                 arrow.transition().duration(750).ease(d3.easeCircle).style("transform", "rotate(225deg)").style("-webkit-transform:", "rotate(225deg)");
             } else {
-                menu.transition().duration(350).ease(d3.easeCircle).style("height", "0px")
-                contents.transition().duration(350).ease(d3.easeCircle).style("display", "none");
+                menu.transition().duration(350).ease(d3.easeCircle).style("height", "0px");
+                //contents.transition().duration(3500).ease(d3.easeCircle).style("height", "0%");
+                //contents.transition().duration(350).ease(d3.easeCircle).style("height":"");
                 arrow.transition().duration(750).ease(d3.easeCircle).style("transform", "rotate(45deg)").style("-webkit-transform:", "rotate(45deg)");
             }
         }
@@ -82,8 +86,8 @@ const Menu = ({setLoading, setData, setFailedLoad, setLastQuery, setColorScheme,
     return (
         <div className="Menu">
             <div className="menu-shadow">
-                <div className="dropdown-menu">
-                    <div className="dropdown-menu-contents" style={{ "display": "none" }}>
+                <div className="dropdown-menu" style={{ "overflow":"hidden" }}>
+                    <div className="dropdown-menu-contents">
                         <div className="row">
                             <div className="column">
                                 <h2>Question of Interest</h2>
